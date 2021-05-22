@@ -70,7 +70,7 @@
 
   
 
-  ### API 명세서
+  ### [API 명세서](https://github.com/SOPT28th-SOPKATHON-Kick/Kick_Server/
 
 ![image](https://user-images.githubusercontent.com/62228195/119237662-f2dd6f80-bb78-11eb-9e1a-7f47bd92c137.png)
 
