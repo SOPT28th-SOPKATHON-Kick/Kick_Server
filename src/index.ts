@@ -1,11 +1,14 @@
 import express from "express"; // 서버 구축을 돕는 프레임워크
 import connectDB from "./Logger/db";
+import cors from "cors";
 
 const app = express();
 
 import mongoose from "mongoose";
 import config from "./config/index";
 import Post from "./models/Post";
+
+app.use(cors());
 
 connectDB();
 
