@@ -32,4 +32,10 @@ export default {
    */
   githubClientId: process.env.GITHUB_CLIENT_ID,
   githubSecret: process.env.GITHUB_SECRET,
+
+  /**
+   * senderInfo
+   */
+   user: process.env.USER,
+   pass: process.env.PASS,
 };
