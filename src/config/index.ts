@@ -36,6 +36,6 @@ export default {
   /**
    * senderInfo
    */
-   user: process.env.USER,
-   pass: process.env.PASS,
+   mailuser: process.env.MAIL_USER,
+   mailpass: process.env.MAIL_PASS,
 };

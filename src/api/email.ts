@@ -21,14 +21,14 @@ router.post(
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: config.user,  // gmail 계정 아이디
-        pass: config.pass,  // gmail 계정의 비밀번호
+        user: config.mailuser,  // gmail 계정 아이디
+        pass: config.mailpass,  // gmail 계정의 비밀번호
       }
     });
 
     let mailOptions = {
       from: email,              // 발신 메일 주소
-      to: config.user ,     // 수신 메일 주소
+      to: config.mailuser ,     // 수신 메일 주소
       subject: name,            // 메일 제목
       text: text,               // 메일 내용
     };
