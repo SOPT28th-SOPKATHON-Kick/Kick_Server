@@ -4,8 +4,6 @@ import cors from "cors";
 
 const app = express();
 
-import mongoose from "mongoose";
-import config from "./config/index";
 import Post from "./models/Post";
 import Review from "./models/Review";
 
