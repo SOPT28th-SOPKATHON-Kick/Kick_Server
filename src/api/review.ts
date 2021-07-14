@@ -25,7 +25,7 @@ router.post(
       isInstitution,
       institutionName,
       content,
-      user,
+      //user,
     } = req.body;
 
     const add = {
@@ -36,7 +36,7 @@ router.post(
 
     // Build review object
     let reviewFields: IReviewInputDTO = {
-      user: user.id,
+      //user: user.id,
     };
     if (title) reviewFields.title = title;
     if (endingCountry) reviewFields.endingCountry = endingCountry;
@@ -57,17 +57,6 @@ router.post(
       let review = new Review(reviewFields);
       //review.crawlingData.unshift(add);
       await review.save();
-
-      axios.get(url).then(html => {
-        const $ = cheerio.load(html.data);
-        const $bodyList = $('head');
-        //each : list 마다 함수 실행, forEach와 동일
-        $bodyList.each(function(i, elem) {
-          add.link = $(this).find('meta[property="og:url"]').attr('content'),
-          add.image = $(this).find('meta[property="og:image"]').attr('content'),
-          add.desc = $(this).find('meta[property="og:description"]').attr('content')
-        });
-      }) //크롤링 끝
 
       res.json(review);
     } catch (error) {
