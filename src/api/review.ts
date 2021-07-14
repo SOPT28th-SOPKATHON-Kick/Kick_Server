@@ -1,93 +1,46 @@
-import express from "express";
+import { Router, Request, Response } from "express";
 import config from "../config";
-import Review from "../models/Review";
-import { IReviewInputDTO } from "../interfaces/IReview";
 
-const router = express.Router();
-
-const puppeteer = require("puppeteer");
-const cheerio = require('cheerio');
+const nodemailer = require('nodemailer');
+const router = Router();
 
 /**
- *  @route POST api/reviews
- *  @desc Create reviews
- *  @access Private
-*/
+ *  @route POST api/email
+ *  @desc Send the email
+ *  @access Public
+ */
 router.post(
-  "/",
-  //auth,
-  async (req, res) => {
+  "/", 
+  async (req: Request, res: Response, next) => {
     const {
-      title,
-      endingCountry,
-      endingAirport,
-      hashtags,
-      isInstitution,
-      institutionName,
-      content,
-      user,
+      name,
+      email,
+      text,
     } = req.body;
 
-    const add = {
-      link: null,
-      desc: null,
-      image: null,
-    };
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: config.mailuser,  // gmail 계정 아이디
+        pass: config.mailpass,  // gmail 계정의 비밀번호
+      }
+    });
 
-    // Build review object
-    let reviewFields: IReviewInputDTO = {
-      //user: user.id,
+    let mailOptions = {
+      from: email,              // 발신 메일 주소
+      to: config.mailuser ,     // 수신 메일 주소
+      subject: name,            // 메일 제목
+      text: text,               // 메일 내용
     };
-    if (title) reviewFields.title = title;
-    if (endingCountry) reviewFields.endingCountry = endingCountry;
-    if (endingAirport) reviewFields.endingAirport = endingAirport;
-    if (isInstitution) reviewFields.isInstitution = isInstitution;
-    if (institutionName) reviewFields.institutionName = institutionName;
-    if (hashtags) reviewFields.hashtags = hashtags;
-    if (content) reviewFields.content = content;
-    
-    // Build crawlingData object
-    if (add.link) reviewFields.crawlingData.link = add.link;
-    if (add.image) reviewFields.crawlingData.image = add.image;
-    if (add.desc) reviewFields.crawlingData.desc = add.desc;
 
     try {
-      const extractData = html => {
+      transporter.sendMail(mailOptions);
 
-        const $ = cheerio.load(html);
-        const $items = $('head');
-        $items.each(function (i, elem) {
-            add.link = $(this).find('meta[property="og:url"]').attr('content');
-            add.image = $(this).find('meta[property="og:image"]').attr('content');
-            add.desc = $(this).find('meta[property="og:description"]').attr('content');
-        });
-      }
-    
-      const browserOption = {
-        headless : true,
-      };
-      const browser = await puppeteer.launch(browserOption);
-      const page = await browser.newPage();
-      // Crawling
-      const url = req.body.content;
-      const response = await page.goto(url);
-      const html = await response.text();
-      extractData(html);
-
-      //Create
-      let review = new Review(reviewFields);
-      await review.save();
-
-      review = await Review.findOne({ _id: review.id });
-      review.crawlingData.unshift(add);
-      await review.save();
-
-      res.json(review);
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send("Server Error");
-    }
-  }
-);
+      res.status(200).json(mailOptions);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error.");
+    } 
+})
 
 module.exports = router;
