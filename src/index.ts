@@ -17,6 +17,7 @@ Post.createCollection();
 app.use(express.json()); // input 값을 json형태로 받는다.
 app.use("/api/post", require("./api/post"));
 app.use("/api/email", require("./api/email"));
+app.use("/api/reviews", require("./api/reviews"));
 
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
