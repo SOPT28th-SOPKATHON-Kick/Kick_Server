@@ -48,9 +48,9 @@ router.post(
     if (content) reviewFields.content = content;
     
     // Build crawlingData object
-    if (add.link) reviewFields.crawlingData.link = add.link;
-    if (add.image) reviewFields.crawlingData.image = add.image;
-    if (add.desc) reviewFields.crawlingData.desc = add.desc;
+    if (add.link) reviewFields.link = add.link;
+    if (add.image) reviewFields.image = add.image;
+    if (add.desc) reviewFields.desc = add.desc;
 
     try {
       //Create

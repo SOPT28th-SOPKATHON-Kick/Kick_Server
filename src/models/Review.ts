@@ -27,7 +27,7 @@ const ReviewSchema = new mongoose.Schema({
   content: {
     type: String,
   },
-  crawlingData: [
+  /*crawlingData: [
     {
       link: {
         type: String,
@@ -40,7 +40,16 @@ const ReviewSchema = new mongoose.Schema({
       },
       _id: false
     },
-  ],
+  ],*/
+  link: {
+    type: String,
+  },
+  image: {
+    type: String,
+  },
+  desc: {
+    type: String,
+  },
   writeDate: {
     type: Date,
     default: Date.now,
