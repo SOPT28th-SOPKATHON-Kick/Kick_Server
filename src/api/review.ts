@@ -1,9 +1,10 @@
-import { Router, Request, Response } from "express";
-
+import express from "express";
+import config from "../config";
 import Review from "../models/Review";
 import { IReviewInputDTO } from "../interfaces/IReview";
 
-const router = Router();
+const router = express.Router();
+
 const puppeteer = require("puppeteer");
 const cheerio = require('cheerio');
 
@@ -15,7 +16,7 @@ const cheerio = require('cheerio');
 router.post(
   "/",
   //auth,
-  async (req: Request, res: Response) => {
+  async (req, res) => {
     const {
       title,
       endingCountry,
