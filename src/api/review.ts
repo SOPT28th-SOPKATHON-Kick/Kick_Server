@@ -1,6 +1,7 @@
 import express from "express";
 import config from "../config";
 import Review from "../models/Review";
+import { IReviewInputDTO } from "../interfaces/IReview";
 
 const router = express.Router();
 const axios = require("axios");
@@ -14,7 +15,7 @@ const cheerio = require('cheerio');
 router.post(
     "/",
     //auth,
-    async (req: Request, res: Response) => {
+    async (req, res) => {
       const {
         title,
         endingCountry,
