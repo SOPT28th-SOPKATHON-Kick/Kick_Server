@@ -69,7 +69,7 @@ router.post(
       }) //크롤링 끝
 
       review = await Review.findOne({ _id: review.id });
-      review.crawlingData.unshift(add);
+      review.unshift(add);
       await review.save();
 
       res.json(add);
