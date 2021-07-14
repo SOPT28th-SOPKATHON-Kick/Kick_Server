@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import config from "../config";
-import Review from "../models/Review";
 
 const connectDB = async () => {
   try {
@@ -11,9 +10,6 @@ const connectDB = async () => {
     });
 
     console.log("Mongoose Connected ...");
-    Review.createCollection().then(function (collection) {
-      console.log("Review Collection is created!");
-    });
   } catch (err) {
     console.error(err.message);
     process.exit(1);

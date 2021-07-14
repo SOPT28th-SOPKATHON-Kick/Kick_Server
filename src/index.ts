@@ -7,12 +7,14 @@ const app = express();
 import mongoose from "mongoose";
 import config from "./config/index";
 import Post from "./models/Post";
+import Review from "./models/Review";
 
 app.use(cors());
 
 connectDB();
 
 Post.createCollection();
+Review.createCollection();
 
 app.use(express.json()); // input 값을 json형태로 받는다.
 app.use("/api/post", require("./api/post"));
