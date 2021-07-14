@@ -2,6 +2,9 @@ import express from "express";
 import config from "../config";
 import Review from "../models/Review";
 import { IReviewInputDTO } from "../interfaces/IReview";
+import { run } from "./craw";
+import { data } from "cheerio/lib/api/attributes";
+import { next } from "cheerio/lib/api/traversing";
 
 const router = express.Router();
 
@@ -28,12 +31,6 @@ router.post(
       user,
     } = req.body;
 
-    const add = {
-      link: null,
-      desc: null,
-      image: null,
-    };
-
     // Build review object
     let reviewFields: IReviewInputDTO = {
       //user: user.id,
@@ -47,39 +44,19 @@ router.post(
     if (content) reviewFields.content = content;
     
     // Build crawlingData object
-    if (add.link) reviewFields.crawlingData.link = add.link;
-    if (add.image) reviewFields.crawlingData.image = add.image;
-    if (add.desc) reviewFields.crawlingData.desc = add.desc;
+    //if (add.link) reviewFields.crawlingData.link = add.link;
+   // if (add.image) reviewFields.crawlingData.image = add.image;
+    //if (add.desc) reviewFields.crawlingData.desc = add.desc;
 
     try {
-      const extractData = html => {
-
-        const $ = cheerio.load(html);
-        const $items = $('head');
-        $items.each(function (i, elem) {
-            add.link = $(this).find('meta[property="og:url"]').attr('content');
-            add.image = $(this).find('meta[property="og:image"]').attr('content');
-            add.desc = $(this).find('meta[property="og:description"]').attr('content');
-        });
-      }
-    
-      const browserOption = {
-        headless : true,
-      };
-      const browser = await puppeteer.launch(browserOption);
-      const page = await browser.newPage();
-      // Crawling
-      const url = req.body.content;
-      const response = await page.goto(url);
-      const html = await response.text();
-      extractData(html);
+        run(req,res,next);
 
       //Create
       let review = new Review(reviewFields);
       await review.save();
 
       review = await Review.findOne({ _id: review.id });
-      review.crawlingData.unshift(add);
+      review.crawlingData.unshift(res);
       await review.save();
 
       res.json(review);
