@@ -10,10 +10,7 @@ export interface IReview {
   isInstitution: string;
   institutionName: string;
   content: string;
-  link: string;
-  image: string;
-  desc: string;
-  //crawlingData: [ICrawlingData];
+  crawlingData: [ICrawlingData];
   writeDate: Date;
 }
 
@@ -26,8 +23,5 @@ export interface IReviewInputDTO {
   isInstitution?: string;
   institutionName?: string;
   content?: string;
-  link?: string;
-  image?: string;
-  desc?: string;
-  //crawlingData?: ICrawlingData;
+  crawlingData?: ICrawlingData;
 }
