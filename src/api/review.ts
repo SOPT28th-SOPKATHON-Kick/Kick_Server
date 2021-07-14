@@ -8,27 +8,77 @@ const router = express.Router();
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-router.get('/', function(req, res, next) {
-  let url = 'https://thegift.tistory.com/232';
-  
-  axios.get(url).then(html => {
-    let ulList = [];
-    const $ = cheerio.load(html.data);
-    const $bodyList = $("head");
-		//each : list 마다 함수 실행, forEach와 동일
-    $bodyList.each(function(i, elem) {
-      ulList[i] = {
-        //find : 해당 태그가 있으면 그 요소 반환
-          link: $(this).find('meta[property="og:url"]').attr('content'),
-          image: $(this).find('meta[property="og:image"]').attr('content'),
-          desc: $(this).find('meta[property="og:description"]').attr('content')
-      };
-    });
+/**
+ *  @route POST api/reviews
+ *  @desc Create reviews
+ *  @access Private
+*/
+router.post(
+  "/",
+  //auth,
+  async (req, res) => {
+    const {
+      title,
+      endingCountry,
+      endingAirport,
+      hashtags,
+      isInstitution,
+      institutionName,
+      content,
+      user,
+    } = req.body;
 
-    const data = ulList.filter(n => n.title);
-    //json으로 변환하여 app으로 전송
-    return res.json(data);
-  })
-});
+    const add = {
+      link: null,
+      desc: null,
+      image: null,
+    };
+    let url = req.body.content;
+
+    // Build review object
+    let reviewFields: IReviewInputDTO = {
+      user: user.id,
+    };
+    if (title) reviewFields.title = title;
+    if (endingCountry) reviewFields.endingCountry = endingCountry;
+    if (endingAirport) reviewFields.endingAirport = endingAirport;
+    if (isInstitution) reviewFields.isInstitution = isInstitution;
+    if (institutionName) reviewFields.institutionName = institutionName;
+    if (hashtags) reviewFields.hashtags = hashtags;
+    if (content) reviewFields.content = content;
+    
+    // Build crawlingData object
+    if (add.link) reviewFields.crawlingData.link = add.link;
+    if (add.image) reviewFields.crawlingData.image = add.image;
+    if (add.desc) reviewFields.crawlingData.desc = add.desc;
+
+    try {
+      //Create
+      let review = new Review(reviewFields);
+      await review.save();
+
+      axios.get(url).then(html => {
+        const $ = cheerio.load(html.data);
+        const $bodyList = $('head');
+        //each : list 마다 함수 실행, forEach와 동일
+        $bodyList.each(function(i, elem) {
+          add.link = $(this).find('meta[property="og:url"]').attr('content'),
+          add.image = $(this).find('meta[property="og:image"]').attr('content'),
+          add.desc = $(this).find('meta[property="og:description"]').attr('content')
+        });
+      }) //크롤링 끝
+
+      review = await Review.findOne({ _id: review.id });
+      review.crawlingData.unshift(add);
+      await review.save();
+
+      res.json(add);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Server Error");
+    }
+  }
+);
+
 
 module.exports = router;
