@@ -33,7 +33,6 @@ router.post(
       desc: null,
       image: null,
     };
-    let url = req.body.content;
 
     // Build review object
     let reviewFields: IReviewInputDTO = {
@@ -53,8 +52,10 @@ router.post(
     if (add.desc) reviewFields.crawlingData.desc = add.desc;
 
     try {
+      let url = req.body.content;
       //Create
       let review = new Review(reviewFields);
+      //review.crawlingData.unshift(add);
       await review.save();
 
       axios.get(url).then(html => {
