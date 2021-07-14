@@ -13,7 +13,7 @@ const cheerio = require('cheerio');
 */
 router.post(
     "/",
-    auth,
+    //auth,
     async (req: Request, res: Response) => {
       const {
         title,
@@ -23,7 +23,7 @@ router.post(
         isInstitution,
         institutionName,
         content,
-        user,
+        //user,
       } = req.body;
   
       const add = {
@@ -36,7 +36,7 @@ router.post(
   
       // Build review object
       let reviewFields: IReviewInputDTO = {
-        user: user.id,
+        //user: user.id,
       };
       if (title) reviewFields.title = title;
       if (endingCountry) reviewFields.endingCountry = endingCountry;
